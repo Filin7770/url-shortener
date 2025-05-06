@@ -22,7 +22,7 @@ func shortenHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
-	shortUrl, err := store.SaveUrl(request.LongUrl)
+	shortUrl, err := store.SaveUrl(request.LongUrl, r)
 	if err != nil {
 		http.Error(w, "Failed to save URL", http.StatusInternalServerError)
 		return
