@@ -7,6 +7,8 @@ import (
 	"errors"
 	"fmt"
 	_ "github.com/lib/pq"
+	"net/http"
+	"url-shortener/config"
 )
 
 type URLStore struct {
@@ -46,15 +48,15 @@ func generateShortUrl(longUrl string) (string, error) {
 	shortHash := hexHash[:6]
 	return shortHash, nil
 }
-func (store *URLStore) SaveUrl(longUrl string) (string, error) {
+func (store *URLStore) SaveUrl(longUrl string, r *http.Request) (string, error) {
 	var existingUrl string
 	err := store.db.QueryRow(`
-	SELECT short_url 
-	FROM urls 
-	WHERE long_url = $1`, longUrl).Scan(&existingUrl)
+		SELECT short_url 
+		FROM urls 
+		WHERE long_url = $1`, longUrl).Scan(&existingUrl)
 
 	if err == nil {
-		return "http://localhost:8080/r/" + existingUrl, nil
+		return config.GetBaseURL(r) + "/r/" + existingUrl, nil
 	}
 	if err != sql.ErrNoRows {
 		return "", fmt.Errorf("ошибка проверки существующей ссылки: %v", err)
@@ -76,7 +78,7 @@ func (store *URLStore) SaveUrl(longUrl string) (string, error) {
 		return "", fmt.Errorf("ошибка сохранения URL: %v", err)
 	}
 
-	return "http://localhost:8080/r/" + shortUrl, nil
+	return config.GetBaseURL(r) + "/r/" + shortUrl, nil
 }
 
 func (store *URLStore) GetLongUrl(shortUrl string) (string, error) {
