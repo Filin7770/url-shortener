@@ -78,7 +78,7 @@ func (store *URLStore) SaveUrl(longUrl string, r *http.Request) (string, error) 
 		return "", fmt.Errorf("ошибка сохранения URL: %v", err)
 	}
 
-	return "http://localhost:8080/r/" + shortUrl, nil
+	return config.GetBaseURL(r) + "/r/" + shortUrl, nil
 }
 
 func (store *URLStore) GetLongUrl(shortUrl string) (string, error) {

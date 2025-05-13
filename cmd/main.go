@@ -40,9 +40,9 @@ func redirectHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Запрос редиректа для короткого ID:", shortID)
 
 	// Ищем соответствующую длинную ссылку в базе
-	longUrl, err := store.GetLongUrl(shortID) // Используем метод GetLongUrl
+	longUrl, err := store.GetLongUrl(shortID)
 	if err != nil {
-		if err.Error() == "URL не найден" { // Проверяем, что это ошибка "не найдено"
+		if err.Error() == "URL не найден" {
 			fmt.Println("Ошибка: короткий ID не найден в базе:", shortID)
 			http.NotFound(w, r)
 			return
