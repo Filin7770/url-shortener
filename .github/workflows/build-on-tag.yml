@@ -1,4 +1,4 @@
-name: Build url-shortener on tag
+name: Build and Release url-shortener
 
 on:
   push:
@@ -15,19 +15,24 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       with:
-        fetch-depth: 0 # Полная история для генерации CHANGELOG 
-    
+        fetch-depth: 0
+
+    - name: Switch to main branch
+      run: |
+        git checkout main
+        git pull origin main
+
     - name: Set up Go
       uses: actions/setup-go@v5
       with:
         go-version: '1.24.0'
-    
+
     - name: Install Go dependencies
       run: go mod download
 
     - name: Build Go application
       run: go build -o url-shortener ./cmd/main.go
-    
+
     - name: Generate CHANGELOG
       run: |
         echo "# Changelog" > CHANGELOG.md
@@ -37,7 +42,7 @@ jobs:
         git config --global user.name 'GitHub Action'
         git config --global user.email 'action@github.com'
         git commit -m "Update CHANGELOG for ${{ github.ref_name }}"
-        git push
+        git push origin main
 
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v2
