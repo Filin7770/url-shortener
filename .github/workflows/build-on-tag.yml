@@ -16,7 +16,7 @@ jobs:
         fetch-depth: 0 # Полная история для генерации CHANGELOG 
     
     - name: Set up Go
-      uses: action/setup-go@v5
+      uses: actions/setup-go@v5
       with:
         go-version: '1.24.0'
     
